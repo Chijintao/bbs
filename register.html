@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1 class="text-center">注册</h1>
+            <form id="my_form">
+                {% csrf_token %}
+                {% for form in form_obj %}
+                    <div class="form-group">
+                        <label for="{{ form.auto_id }}">{{ form.label }}</label>
+                        {{ form }}
+                        <span class="pull-right" style="color: red">{{ form.errors.0 }}</span>
+                    </div>
+                {% endfor %}
+                <div class="form-group">
+                    <label for="my_file">头像
+                         {% load static %}
+                        <img src="{% static 'img/default.jpg' %}" id="my_img" alt="" width="100px" style="margin-left: 10px">
+                    </label>
+                    <input type="file" id="my_file" style="display: none" name="avatar">
+                </div>
+                <input type="button" value="注册" class="btn btn-block btn-primary" id="id_commit">
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $('#my_file').change(function (){
+        let my_file_reader_obj = new FileReader()
+        let file_obj = $(this)[0].files[0]
+        my_file_reader_obj.readAsDataURL(file_obj)
+        my_file_reader_obj.onload = function (){
+            $('#my_img').attr('src', my_file_reader_obj.result)
+        }
+    })
+    $('#id_commit').click(function (){
+        let form_data_obj = new FormData
+        $.each($('#my_form').serializeArray(), function (index, obj){
+            form_data_obj.append(obj.name, obj.value)
+        })
+        form_data_obj.append('avatar', $('#my_file')[0].files[0])
+        $.ajax({
+            url:'',
+            type:'post',
+            data:form_data_obj,
+            contentType:false,
+            processData:false,
+            success:function (args){
+                if (args.code === 1000){
+                    window.location.href = args.url
+                }else {
+                    $.each(args.msg, function (index, obj){
+                        let target_id = '#id_'+index
+                        $(target_id).next().text(obj[0]).parent().addClass('has-error')
+                    })
+                }
+            }
+        })
+    })
+    $('input').focus(function (){
+        $(this).next().text('').parent().removeClass('has-error')
+    })
+</script>
+</body>
+</html>

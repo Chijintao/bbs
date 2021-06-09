@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    {% load static %}
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h1 class="text-center">登录</h1>
+                <div class="form-group">
+                    <label for="id_username">用户:</label>
+                    <input type="text" name="username" id="id_username" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="id_password">密码:</label>
+                    <input type="password" name="password" id="id_password" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="id_code">验证码:</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" name="code" id="id_code" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <img src="{% url 'get_code' %}" alt="" width="605" height="35" id="my_img">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-block btn-success" name="btn" id="id_btn">登录</button>
+                <span id="error" style="color: red"></span>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#my_img').click(function (){
+            let old_val = $(this).attr('src')
+            $(this).attr('src', old_val += '?')
+        })
+
+        $('#id_btn').click(function (){
+            $.ajax({
+                url:'',
+                type:'post',
+                data:{
+                    'username':$('#id_username').val(),
+                    'password':$('#id_password').val(),
+                    'code':$('#id_code').val(),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success:function (args){
+                    if (args.code === 1000){
+                        window.location.href = args.url
+                    }else {
+                        $('#error').text(args.msg)
+                    }
+                }
+            })
+        })
+    </script>
+</body>
+</html>

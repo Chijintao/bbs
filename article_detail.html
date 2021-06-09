@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block css %}
+    <style>
+    #div_digg {
+    float: right;
+    margin-bottom: 10px;
+    margin-right: 30px;
+    font-size: 12px;
+    width: 128px;
+    text-align: center;
+    margin-top: 10px;
+}
+    .diggit {
+    float: left;
+    width: 46px;
+    height: 52px;
+    background: url(/static/img/upup.gif) no-repeat;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 2px;
+    padding-top: 5px;
+}
+    .buryit {
+    float: right;
+    margin-left: 20px;
+    width: 46px;
+    height: 52px;
+    background: url(/static/img/downdown.gif) no-repeat;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 2px;
+    padding-top: 5px;
+}
+    .clear {
+    clear: both;
+}
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div><h2>{{ article_obj.title }}</h2></div>
+    {{ article_obj.content|safe }}
+    <!--点赞点踩开始-->
+    <div id="div_digg">
+        <div class="diggit action">
+            <span class="diggnum" id="digg_count">0</span>
+        </div>
+        <div class="buryit action">
+            <span class="burynum" id="bury_count">0</span>
+        </div>
+        <div class="clear"></div>
+        <div class="diggword" id="digg_tips">
+        </div>
+    </div>
+    <!--点赞点踩结束-->
+{% endblock %}
+
+{% block js %}
+    <script>
+    $('.action').click(function (){
+        alert($(this).hasClass('diggit'))
+    })
+    </script>
+{% endblock %}
